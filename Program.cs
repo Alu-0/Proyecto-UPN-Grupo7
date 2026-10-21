@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 class Program
 {
@@ -7,8 +8,12 @@ class Program
     static string[] estados = new string[100];
     static int total = 0;
 
+    static string archivo = "encomiendas.txt";
+
     static void Main()
     {
+        CargarRegistros();
+
         int opcion = 0;
 
         do
@@ -96,9 +101,9 @@ class Program
             }
         }
 
-        if (codigo.Length < 4)
+        if (codigo.Length < 4 || codigo.Contains("|"))
         {
-            Console.WriteLine("El codigo debe tener 4 caracteres como minimo.");
+            Console.WriteLine("El codigo debe tener al menos 4 caracteres y no contener |.");
             return;
         }
 
@@ -116,7 +121,8 @@ class Program
         estados[total] = "Registrado";
         total++;
 
-        Console.WriteLine("Encomienda registrada.");
+        GuardarRegistros();
+        Console.WriteLine("Encomienda registrada y guardada.");
     }
 
     static void BuscarPorCodigo()
@@ -155,7 +161,8 @@ class Program
                 if (respuesta.ToUpper() == "S")
                 {
                     estados[i] = "Entregado";
-                    Console.WriteLine("Estado actualizado correctamente.");
+                    GuardarRegistros();
+                    Console.WriteLine("Estado actualizado y guardado.");
                 }
                 else
                 {
@@ -219,7 +226,46 @@ class Program
             }
         }
 
+        GuardarRegistros();
         Console.WriteLine("Encomiendas ordenadas por codigo.");
         Mostrar();
+    }
+
+    static void GuardarRegistros()
+    {
+        using (StreamWriter escritor = new StreamWriter(archivo))
+        {
+            for (int i = 0; i < total; i++)
+            {
+                escritor.WriteLine(
+                    dnis[i] + "|" + codigos[i] + "|" + estados[i]);
+            }
+        }
+    }
+
+    static void CargarRegistros()
+    {
+        if (!File.Exists(archivo))
+        {
+            Console.WriteLine("Archivo de registros nuevo. Se creara al guardar.");
+            return;
+        }
+
+        string[] lineas = File.ReadAllLines(archivo);
+
+        for (int i = 0; i < lineas.Length && total < 100; i++)
+        {
+            string[] datos = lineas[i].Split('|');
+
+            if (datos.Length == 3)
+            {
+                dnis[total] = datos[0];
+                codigos[total] = datos[1];
+                estados[total] = datos[2];
+                total++;
+            }
+        }
+
+        Console.WriteLine("Registros cargados: " + total);
     }
 }
