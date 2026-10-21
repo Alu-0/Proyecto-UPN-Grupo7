@@ -16,8 +16,9 @@ class Program
             Console.WriteLine("\n<<< SISTEMA SHALOM >>>");
             Console.WriteLine("1. Registrar encomienda");
             Console.WriteLine("2. Buscar encomienda por codigo");
-            Console.WriteLine("3. Mostrar registros");
-            Console.WriteLine("4. Salir");
+            Console.WriteLine("3. Actualizar estado");
+            Console.WriteLine("4. Mostrar registros");
+            Console.WriteLine("5. Salir");
             Console.Write("Opcion: ");
 
             string entrada = Console.ReadLine() ?? "";
@@ -30,6 +31,8 @@ class Program
                 opcion = 3;
             else if (entrada == "4")
                 opcion = 4;
+            else if (entrada == "5")
+                opcion = 5;
             else
                 opcion = 0;
 
@@ -42,9 +45,12 @@ class Program
                     BuscarPorCodigo();
                     break;
                 case 3:
-                    Mostrar();
+                    ActualizarEstado();
                     break;
                 case 4:
+                    Mostrar();
+                    break;
+                case 5:
                     Console.WriteLine("Saliendo...");
                     break;
                 default:
@@ -52,12 +58,12 @@ class Program
                     break;
             }
 
-        } while (opcion != 4);
+        } while (opcion != 5);
     }
 
     static void Registrar()
     {
-        if (total == 100)
+        if (total >= 100)
         {
             Console.WriteLine("Limite alcanzado.");
             return;
@@ -109,7 +115,7 @@ class Program
 
     static void BuscarPorCodigo()
     {
-        Console.Write("Ingrese el codigo de seguimiento: ");
+        Console.Write("Ingrese el codigo: ");
         string codigo = (Console.ReadLine() ?? "").Trim();
 
         for (int i = 0; i < total; i++)
@@ -124,7 +130,37 @@ class Program
             }
         }
 
-        Console.WriteLine("No se encontro una encomienda con ese codigo.");
+        Console.WriteLine("No se encontro la encomienda.");
+    }
+
+    static void ActualizarEstado()
+    {
+        Console.Write("Ingrese el codigo de seguimiento: ");
+        string codigo = (Console.ReadLine() ?? "").Trim();
+
+        for (int i = 0; i < total; i++)
+        {
+            if (codigos[i].ToUpper() == codigo.ToUpper())
+            {
+                Console.WriteLine("Estado actual: " + estados[i]);
+                Console.Write("¿Marcar como Entregado? (S/N): ");
+                string respuesta = (Console.ReadLine() ?? "").Trim();
+
+                if (respuesta.ToUpper() == "S")
+                {
+                    estados[i] = "Entregado";
+                    Console.WriteLine("Estado actualizado correctamente.");
+                }
+                else
+                {
+                    Console.WriteLine("No se realizaron cambios.");
+                }
+
+                return;
+            }
+        }
+
+        Console.WriteLine("No se encontro la encomienda.");
     }
 
     static void Mostrar()
