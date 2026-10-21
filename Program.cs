@@ -18,7 +18,8 @@ class Program
             Console.WriteLine("2. Buscar encomienda por codigo");
             Console.WriteLine("3. Actualizar estado");
             Console.WriteLine("4. Mostrar registros");
-            Console.WriteLine("5. Salir");
+            Console.WriteLine("5. Ordenar por codigo");
+            Console.WriteLine("6. Salir");
             Console.Write("Opcion: ");
 
             string entrada = Console.ReadLine() ?? "";
@@ -33,6 +34,8 @@ class Program
                 opcion = 4;
             else if (entrada == "5")
                 opcion = 5;
+            else if (entrada == "6")
+                opcion = 6;
             else
                 opcion = 0;
 
@@ -51,6 +54,9 @@ class Program
                     Mostrar();
                     break;
                 case 5:
+                    OrdenarPorCodigo();
+                    break;
+                case 6:
                     Console.WriteLine("Saliendo...");
                     break;
                 default:
@@ -58,7 +64,7 @@ class Program
                     break;
             }
 
-        } while (opcion != 5);
+        } while (opcion != 6);
     }
 
     static void Registrar()
@@ -180,5 +186,40 @@ class Program
                 " | Codigo: " + codigos[i] +
                 " | Estado: " + estados[i]);
         }
+    }
+
+    static void OrdenarPorCodigo()
+    {
+        if (total == 0)
+        {
+            Console.WriteLine("No hay registros para ordenar.");
+            return;
+        }
+
+        for (int i = 0; i < total - 1; i++)
+        {
+            for (int j = 0; j < total - 1 - i; j++)
+            {
+                if (string.Compare(
+                    codigos[j], codigos[j + 1],
+                    StringComparison.OrdinalIgnoreCase) > 0)
+                {
+                    string temporal = codigos[j];
+                    codigos[j] = codigos[j + 1];
+                    codigos[j + 1] = temporal;
+
+                    temporal = dnis[j];
+                    dnis[j] = dnis[j + 1];
+                    dnis[j + 1] = temporal;
+
+                    temporal = estados[j];
+                    estados[j] = estados[j + 1];
+                    estados[j + 1] = temporal;
+                }
+            }
+        }
+
+        Console.WriteLine("Encomiendas ordenadas por codigo.");
+        Mostrar();
     }
 }
